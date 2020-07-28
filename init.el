@@ -486,6 +486,9 @@ dump."
   )
 
 (defun dotspacemacs/user-config ()
+  ;; If in mono-repo set this in dir-locals.el to have spacemacs use a subdirectory
+  (setq angular-dir nil)
+
   (spacemacs/declare-prefix "on" "node")
   (spacemacs/declare-prefix "ona" "angular")
   (defun npm-start ()
@@ -494,7 +497,7 @@ dump."
   (spacemacs/set-leader-keys "ons" 'npm-start)
   (defun angular-generate (type)
     (interactive)
-    (projectile-with-default-dir (projectile-project-root)  (shell-command (format "ng generate %s %s" type (read-string (format "%s name: " type))))))
+    (projectile-with-default-dir (concat (projectile-project-root) angular-dir)  (shell-command (format "ng generate %s %s" type (read-string (format "%s name: " type))))))
   (defun angular-component () (interactive) (angular-generate "component"))
   (defun angular-directive () (interactive) (angular-generate "directive"))
   (defun angular-service () (interactive) (angular-generate "service"))
@@ -527,6 +530,14 @@ This function is called at the very end of Spacemacs initialization."
  '(package-selected-packages
    (quote
     (tern yasnippet-snippets xterm-color web-mode web-beautify vterm unfill treemacs-magit tide typescript-mode terminal-here tagedit smeargle slim-mode shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocopfmt rubocop rspec-mode robe rbenv pug-mode projectile-rails rake inflections prettier-js nodejs-repl mwim multi-term mmm-mode minitest markdown-toc magit-svn magit-section magit-gitflow magit-popup lsp-ui livid-mode skewer-mode json-navigator hierarchy json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc impatient-mode htmlize simple-httpd helm-lsp helm-gitignore helm-git-grep helm-css-scss helm-company helm-c-yasnippet haml-mode gitignore-templates gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip feature-mode evil-magit magit git-commit with-editor transient eshell-z eshell-prompt-extras esh-help emmet-mode dap-mode posframe lsp-treemacs bui lsp-mode markdown-mode dash-functional company-web web-completion-data company chruby bundler inf-ruby auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org symon symbol-overlay string-inflection spaceline-all-the-icons restart-emacs request rainbow-delimiters popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless move-text macrostep lorem-ipsum link-hint indent-guide hybrid-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-ls-git helm-flx helm-descbinds helm-ag google-translate golden-ratio font-lock+ flycheck-package flycheck-elsa flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav editorconfig dumb-jump dotenv-mode diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line)))
+ '(safe-local-variable-values
+   (quote
+    ((angular-dir . "src/app")
+     (typescript-backend . tide)
+     (typescript-backend . lsp)
+     (javascript-backend . tide)
+     (javascript-backend . tern)
+     (javascript-backend . lsp))))
  '(standard-indent 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
