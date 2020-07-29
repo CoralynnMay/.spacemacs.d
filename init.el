@@ -26,7 +26,7 @@ This function should only modify configuration layer settings."
    ;; a layer lazily. (default t)
    dotspacemacs-ask-for-lazy-installation t
 
-   ;; List of additional paths where to look for configuration layers.
+   ;; List of additioal paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
    dotspacemacs-configuration-layer-path '()
 
@@ -55,14 +55,14 @@ This function should only modify configuration layer settings."
      syntax-checking
      )
 
-   ;; List of additional packages that will be installed without being
+   ;; List of additioal packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additioal-packages '()
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -207,7 +207,7 @@ It should only modify the values of Spacemacs settings."
    ;; first three are spaceline themes. `doom' is the doom-emacs mode-line.
    ;; `vanilla' is default Emacs mode-line. `custom' is a user defined themes,
    ;; refer to the DOCUMENTATION.org for more info on how to create your own
-   ;; spaceline theme. Value can be a symbol or list with additional properties.
+   ;; spaceline theme. Value can be a symbol or list with additioal properties.
    ;; (default '(spacemacs :separator wave :separator-scale 1.5))
    dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
 
@@ -486,29 +486,39 @@ dump."
   )
 
 (defun dotspacemacs/user-config ()
+  (add-to-list 'exec-path "/Users/coralynn/.rvm/bin")
   ;; If in mono-repo set this in dir-locals.el to have spacemacs use a subdirectory
   (setq angular-dir nil)
   ;; If in mono-repo set this in dir-locals.el to have spacemacs use a subdirectory
   (setq rails-dir nil)
   (spacemacs/declare-prefix "on" "node")
-  (spacemacs/declare-prefix "ona" "angular")
+  (spacemacs/declare-prefix "oa" "angular")
   (spacemacs/declare-prefix "or" "rails")
   (spacemacs/declare-prefix "org" "generate")
   (defun npm-start ()
     (interactive)
-    (projectile-with-default-dir (concat (projectile-project-root) angular-dir) (start-process "npm-start" "npm-start" "npm" "start")))
+    (projectile-with-default-dir (concat (projectile-project-root) angular-dir) (start-process "npm start" "*npm*" "npm" "start")))
   (spacemacs/set-leader-keys "ons" 'npm-start)
+  (defun angular-serve () (interactive) (let ((default-directory (concat (projectile-project-root) angular-dir))) (start-process "angular serve" "*angular*" "ng" "serve" "--host" "0.0.0.0")))
+  (spacemacs/set-leader-keys "oar" 'angular-serve)
+  (defun angular-test () (interactive) (projectile-with-default-dir (concat (projectile-project-root) angular-dir) (start-process "angular test" "*angular*" "ng" "test")))
+  (spacemacs/set-leader-keys "oat" 'angular-test)
   (defun angular-generate (type)
     (interactive)
-    (projectile-with-default-dir (concat (projectile-project-root) angular-dir)  (shell-command (format "ng generate %s %s" type (read-string (format "%s name: " type))))))
+    (projectile-with-default-dir (concat (projectile-project-root) angular-dir)  (start-process (format "generate %s" type) "*angular*" "ng" "generate" type (read-string (format "%s: " type)))))
   (defun angular-component () (interactive) (angular-generate "component"))
   (defun angular-directive () (interactive) (angular-generate "directive"))
   (defun angular-service () (interactive) (angular-generate "service"))
   (defun angular-guard () (interactive) (angular-generate "guard"))
-  (spacemacs/set-leader-keys "onac" 'angular-component)
-  (spacemacs/set-leader-keys "onad" 'angular-directive)
-  (spacemacs/set-leader-keys "onas" 'angular-service)
-  (spacemacs/set-leader-keys "onag" 'angular-guard)
+  (spacemacs/set-leader-keys "oac" 'angular-component)
+  (spacemacs/set-leader-keys "oad" 'angular-directive)
+  (spacemacs/set-leader-keys "oas" 'angular-service)
+  (spacemacs/set-leader-keys "oag" 'angular-guard)
+
+  (defun rails-serve ()
+    (interactive)
+    (let ((default-directory (concat (projectile-project-root) rails-dir))) (start-process "rails server" "*rails*" "rvm" "." "do" "rails" "server")))
+  (spacemacs/set-leader-keys "ors" 'rails-serve)
 
   (defun rails-generate (type)
     (interactive)
@@ -538,10 +548,12 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (tern yasnippet-snippets xterm-color web-mode web-beautify vterm unfill treemacs-magit tide typescript-mode terminal-here tagedit smeargle slim-mode shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocopfmt rubocop rspec-mode robe rbenv pug-mode projectile-rails rake inflections prettier-js nodejs-repl mwim multi-term mmm-mode minitest markdown-toc magit-svn magit-section magit-gitflow magit-popup lsp-ui livid-mode skewer-mode json-navigator hierarchy json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc impatient-mode htmlize simple-httpd helm-lsp helm-gitignore helm-git-grep helm-css-scss helm-company helm-c-yasnippet haml-mode gitignore-templates gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip feature-mode evil-magit magit git-commit with-editor transient eshell-z eshell-prompt-extras esh-help emmet-mode dap-mode posframe lsp-treemacs bui lsp-mode markdown-mode dash-functional company-web web-completion-data company chruby bundler inf-ruby auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org symon symbol-overlay string-inflection spaceline-all-the-icons restart-emacs request rainbow-delimiters popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless move-text macrostep lorem-ipsum link-hint indent-guide hybrid-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-ls-git helm-flx helm-descbinds helm-ag google-translate golden-ratio font-lock+ flycheck-package flycheck-elsa flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav editorconfig dumb-jump dotenv-mode diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line)))
+    (tern yasnippet-snippets xterm-color web-mode web-beautify vterm unfill treemacs-magit tide typescript-mode terminal-here tagedit smeargle slim-mode shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocopfmt rubocop rspec-mode robe rbenv pug-mode projectile-rails rake inflections prettier-js nodejs-repl mwim multi-term mmm-mode minitest markdown-toc magit-svn magit-section magit-gitflow magit-popup lsp-ui livid-mode skewer-mode json-navigator hierarchy json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc impatient-mode htmlize simple-httpd helm-lsp helm-gitignore helm-git-grep helm-css-scss helm-company helm-c-yasnippet haml-mode gitignore-templates gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip feature-mode evil-magit magit git-commit with-editor transient eshell-z eshell-prompt-extras esh-help emmet-mode dap-mode posframe lsp-treemacs bui lsp-mode markdown-mode dash-functioal company-web web-completion-data company chruby bundler inf-ruby auto-yasnippet yasnippet auto-dictioary ac-ispell auto-complete ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org symon symbol-overlay string-inflection spaceline-all-the-icons restart-emacs request rainbow-delimiters popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless move-text macrostep lorem-ipsum link-hint indent-guide hybrid-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-ls-git helm-flx helm-descbinds helm-ag google-translate golden-ratio font-lock+ flycheck-package flycheck-elsa flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav editorconfig dumb-jump dotenv-mode diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line)))
  '(safe-local-variable-values
    (quote
-    ((rails-dir "api")
+    ((rails-dir . "api/")
+     (rails-dir . "api")
+     (rails-dir "api")
      (rails-dir . "server")
      (angular-dir . "site")
      (angular-dir . "src/app")
